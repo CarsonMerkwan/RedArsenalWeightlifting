@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teen Titans Weightlifting Club</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #d32f2f; /* Bold red for energy */
+            color: white;
+            text-align: center;
+            padding: 2em;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header p {
+            margin: 0.5em 0 0;
+            font-size: 1.2em;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .gallery img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .programs {
+            padding: 20px;
+            text-align: center;
+            background-color: #e0e0e0;
+        }
+        .programs h2 {
+            color: #d32f2f;
+        }
+        .program-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .program {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            width: 28%;
+            min-width: 250px;
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .program input {
+            width: 80px;
+            padding: 5px;
+            margin: 5px 0;
+        }
+        .program button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .program button:hover {
+            background-color: #b71c1c;
+        }
+        .program p {
+            margin: 10px 0;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        footer a {
+            color: #d32f2f;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Teen Titans Weightlifting Club</h1>
+        <p>Empowering teens through strength and competition</p>
+    </header>
+
+    <section class="gallery">
+        <img src="https://via.placeholder.com/300x200.png?text=Lifting+Teens" alt="Teens lifting">
+        <img src="https://via.placeholder.com/300x200.png?text=Competition+Day" alt="Competition">
+        <img src="https://via.placeholder.com/300x200.png?text=Team+Spirit" alt="Team">
+    </section>
+
+    <section class="programs">
+        <h2>Weightlifting Programs</h2>
+        <p>Enter your max lift (in lbs) to get a customized starting program!</p>
+        <div class="program-grid">
+            <div class="program">
+                <h3>Bench Press</h3>
+                <label>Max Lift: <input type="number" id="benchMax" min="0" step="5"></label>
+                <button onclick="calculateProgram('bench')">Calculate</button>
+                <p id="benchResult">Enter your max to see your program.</p>
+            </div>
+            <div class="program">
+                <h3>Deadlift</h3>
+                <label>Max Lift: <input type="number" id="deadliftMax" min="0" step="5"></label>
+                <button onclick="calculateProgram('deadlift')">Calculate</button>
+                <p id="deadliftResult">Enter your max to see your program.</p>
+            </div>
+            <div class="program">
+                <h3>Squat</h3>
+                <label>Max Lift: <input type="number" id="squatMax" min="0" step="5"></label>
+                <button onclick="calculateProgram('squat')">Calculate</button>
+                <p id="squatResult">Enter your max to see your program.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Contact us: <a href="mailto:teentitanslifting@example.com">teentitanslifting@example.com</a></p>
+        <p>Join us at our next local competition!</p>
+    </footer>
+
+    <script>
+        function calculateProgram(liftType) {
+            let maxId = liftType + 'Max';
+            let resultId = liftType + 'Result';
+            let max = document.getElementById(maxId).value;
+            if (max && max > 0) {
+                let warmup = Math.round(max * 0.5);
+                let working = Math.round(max * 0.75);
+                let result = `Warm-up: ${warmup} lbs x 5 reps<br>Working Set: ${working} lbs x 3 reps x 3 sets`;
+                document.getElementById(resultId).innerHTML = result;
+            } else {
+                document.getElementById(resultId).innerHTML = "Please enter a valid max lift.";
+            }
+        }
+    </script>
+</body>
+</html>
