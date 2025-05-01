@@ -1,0 +1,418 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Specifies character encoding for the document -->
+    <meta charset="UTF-8">
+    <!-- Ensures the website is responsive and scales correctly on all devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Sets the title of the webpage, shown in the browser tab -->
+    <title>Red Arsenal Weightlifting</title>
+    <!-- Imports the Roboto font from Google Fonts for a modern, sans-serif look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Resets default margins and padding, ensures box-sizing includes borders and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Enables smooth scrolling for anchor links throughout the page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Sets the default font, background color, text color, and line spacing for the body */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Styles the header, which contains the navigation bar */
+        header {
+            background-color: #000000; /* Black background for the header */
+            padding: 1rem 2rem; /* Adds padding for spacing */
+            position: fixed; /* Fixes the header to the top of the page */
+            width: 100%; /* Ensures the header spans the full width */
+            top: 0; /* Aligns the header to the top */
+            z-index: 1000; /* Ensures the header stays above other content */
+        }
+
+        /* Styles the navigation container inside the header */
+        nav {
+            display: flex; /* Uses flexbox to align items horizontally */
+            justify-content: space-between; /* Spreads logo and links apart */
+            align-items: center; /* Vertically centers content */
+            max-width: 1200px; /* Limits the width for large screens */
+            margin: 0 auto; /* Centers the nav horizontally */
+        }
+
+        /* Styles the logo (club name) in the navigation */
+        .logo {
+            font-size: 1.8rem; /* Larger font size for prominence */
+            font-weight: 700; /* Bold font for emphasis */
+            color: #ff0000; /* Red color to match the theme */
+            text-decoration: none; /* Removes underline from the link */
+        }
+
+        /* Styles the unordered list in the navigation */
+        nav ul {
+            list-style: none; /* Removes default bullet points */
+            display: flex; /* Aligns list items horizontally */
+            gap: 2rem; /* Adds space between navigation links */
+        }
+
+        /* Styles individual navigation links */
+        nav ul li a {
+            color: #ffffff; /* White text for links */
+            text-decoration: none; /* Removes underlines */
+            font-size: 1rem; /* Standard font size */
+            transition: color 0.3s ease; /* Smooth color change on hover */
+        }
+
+        /* Changes link color to red when hovered */
+        nav ul li a:hover {
+            color: #ff0000;
+        }
+
+        /* Styles the hero section, which is the full-screen banner */
+        #hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('gym-image.jpg') center/cover no-repeat; /* Dark overlay with placeholder background image */
+            height: 100vh; /* Full viewport height */
+            display: flex; /* Centers content vertically and horizontally */
+            align-items: center; /* Vertically centers content */
+            text-align: center; /* Horizontally centers text */
+            padding: 0 2rem; /* Adds padding for smaller screens */
+        }
+
+        /* Styles the content container within the hero section */
+        #hero .hero-content {
+            max-width: 800px; /* Limits text width for readability */
+            margin: 0 auto; /* Centers content horizontally */
+        }
+
+        /* Styles the main headline in the hero section */
+        #hero h1 {
+            font-size: 3.5rem; /* Large font for impact */
+            margin-bottom: 1rem; /* Space below the headline */
+            color: #ff0000; /* Red color for emphasis */
+        }
+
+        /* Styles the paragraph in the hero section */
+        #hero p {
+            font-size: 1.2rem; /* Slightly larger font for readability */
+            margin-bottom: 2rem; /* Space below the paragraph */
+        }
+
+        /* Styles buttons throughout the site */
+        .btn {
+            display: inline-block; /* Allows padding and margins */
+            padding: 0.8rem 2rem; /* Comfortable button size */
+            background-color: #ff0000; /* Red background */
+            color: #ffffff; /* White text */
+            text-decoration: none; /* Removes underline */
+            border-radius: 5px; /* Rounded corners */
+            font-weight: 700; /* Bold text */
+            transition: background-color 0.3s ease; /* Smooth color change on hover */
+        }
+
+        /* Darkens the button background when hovered */
+        .btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* General styles for all sections */
+        section {
+            padding: 5rem 2rem; /* Adds vertical and horizontal padding */
+            max-width: 1200px; /* Limits content width */
+            margin: 0 auto; /* Centers content horizontally */
+        }
+
+        /* Styles section headings */
+        section h2 {
+            font-size: 2.5rem; /* Large heading size */
+            margin-bottom: 1.5rem; /* Space below headings */
+            color: #ff0000; /* Red color for theme consistency */
+            text-align: center; /* Centers headings */
+        }
+
+        /* Styles the About section */
+        #about {
+            background-color: #222222; /* Slightly lighter dark background */
+        }
+
+        /* Styles the content layout in the About section */
+        #about .about-content {
+            display: flex; /* Aligns image and text side by side */
+            gap: 2rem; /* Space between image and text */
+            align-items: center; /* Vertically aligns content */
+        }
+
+        /* Styles the placeholder image in the About section */
+        #about img {
+            max-width: 50%; /* Limits image width to half the container */
+            border-radius: 10px; /* Rounds image corners */
+        }
+
+        /* Styles the paragraph in the About section */
+        #about p {
+            font-size: 1.1rem; /* Slightly larger font for readability */
+        }
+
+        /* Styles the Membership section */
+        #membership {
+            background-color: #1a1a1a; /* Matches body background */
+        }
+
+        /* Styles the list of membership benefits */
+        #membership ul {
+            list-style: none; /* Removes default bullets */
+            margin: 2rem 0; /* Adds vertical spacing */
+        }
+
+        /* Styles individual list items in the Membership section */
+        #membership ul li {
+            font-size: 1.1rem; /* Readable font size */
+            margin: 1rem 0; /* Space between items */
+            padding-left: 1.5rem; /* Space for custom bullet */
+            position: relative; /* Allows positioning of custom bullet */
+        }
+
+        /* Adds a red checkmark before each list item */
+        #membership ul li::before {
+            content: '✔'; /* Checkmark symbol */
+            color: #ff0000; /* Red color */
+            position: absolute; /* Positions checkmark */
+            left: 0; /* Aligns checkmark to the left */
+        }
+
+        /* Styles the Login section */
+        #login {
+            background-color: #222222; /* Slightly lighter background */
+        }
+
+        /* Styles the login form */
+        #login form {
+            max-width: 400px; /* Limits form width */
+            margin: 0 auto; /* Centers form horizontally */
+            display: flex; /* Stacks form elements vertically */
+            flex-direction: column; /* Aligns elements in a column */
+            gap: 1rem; /* Space between form elements */
+        }
+
+        /* Styles form labels */
+        #login label {
+            font-size: 1.1rem; /* Readable font size */
+        }
+
+        /* Styles form input fields */
+        #login input {
+            padding: 0.8rem; /* Comfortable input size */
+            border: none; /* Removes default border */
+            border-radius: 5px; /* Rounds corners */
+            font-size: 1rem; /* Standard font size */
+        }
+
+        /* Styles the form submit button */
+        #login button {
+            padding: 0.8rem; /* Matches input padding */
+            background-color: #ff0000; /* Red background */
+            color: #ffffff; /* White text */
+            border: none; /* Removes border */
+            border-radius: 5px; /* Rounds corners */
+            font-weight: 700; /* Bold text */
+            cursor: pointer; /* Hand cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth color change */
+        }
+
+        /* Darkens the button background when hovered */
+        #login button:hover {
+            background-color: #cc0000;
+        }
+
+        /* Styles the footer */
+        footer {
+            background-color: #000000; /* Black background */
+            padding: 2rem; /* Adds padding */
+            text-align: center; /* Centers content */
+        }
+
+        /* Styles the footer paragraph */
+        footer p {
+            margin-bottom: 1rem; /* Space below the copyright */
+        }
+
+        /* Styles social media links in the footer */
+        footer .social-links a {
+            color: #ffffff; /* White text */
+            margin: 0 1rem; /* Space between links */
+            text-decoration: none; /* Removes underlines */
+            transition: color 0.3s ease; /* Smooth color change */
+        }
+
+        /* Changes social link color to red when hovered */
+        footer .social-links a:hover {
+            color: #ff0000;
+        }
+
+        /* Responsive styles for screens up to 768px (tablets and smaller) */
+        @media (max-width: 768px) {
+            /* Reduces hero headline size */
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+
+            /* Stacks About section content vertically */
+            #about .about-content {
+                flex-direction: column;
+            }
+
+            /* Makes the About image full-width */
+            #about img {
+                max-width: 100%;
+            }
+
+            /* Reduces spacing between navigation links */
+            nav ul {
+                gap: 1rem;
+            }
+
+            /* Slightly smaller font for navigation links */
+            nav ul li a {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Responsive styles for screens up to 480px (mobile phones) */
+        @media (max-width: 480px) {
+            /* Further reduces hero headline size */
+            #hero h1 {
+                font-size: 2rem;
+            }
+
+            /* Smaller button padding */
+            .btn {
+                padding: 0.6rem 1.5rem;
+            }
+
+            /* Smaller section heading size */
+            section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with fixed navigation bar -->
+    <header>
+        <nav>
+            <!-- Logo links to the hero section -->
+            <a href="#hero" class="logo">Red Arsenal Weightlifting</a>
+            <!-- Navigation menu with anchor links to page sections -->
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#membership">Membership</a></li>
+                <li><a href="#login">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero section with motivational tagline and call-to-action -->
+    <section id="hero">
+        <div class="hero-content">
+            <h1>Build Strength, Forge Will</h1>
+            <p>Join RAW, the premier members-only club for aspiring powerlifters. Train with purpose, connect with a community, and unleash your potential.</p>
+            <a href="#membership" class="btn">Join Now</a>
+        </div>
+    </section>
+
+    <!-- About section describing the club's mission -->
+    <section id="about">
+        <div class="about-content">
+            <!-- Placeholder image for a gym or powerlifter -->
+            <img src="gym-image.jpg" alt="Powerlifter in gym">
+            <div>
+                <h2>About RAW</h2>
+                <p>Red Arsenal Weightlifting (RAW) is dedicated to empowering aspiring powerlifters. Our mission is to provide top-tier training resources, expert coaching, and a supportive community to help you achieve your strength goals. Whether you're a beginner or a seasoned lifter, RAW is your home for growth, grit, and gains.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Membership section detailing benefits -->
+    <section id="membership">
+        <h2>Membership Benefits</h2>
+        <ul>
+            <li>Exclusive training programs tailored for powerlifting</li>
+            <li>Virtual coaching sessions with certified trainers</li>
+            <li>Access to community events and competitions</li>
+            <li>Private online forums for tips, advice, and motivation</li>
+        </ul>
+        <a href="#login" class="btn">Sign Up Today</a>
+    </section>
+
+    <!-- Login section with a simple form -->
+    <section id="login">
+        <h2>Member Login</h2>
+        <!-- Form for member login (no functionality, just styled) -->
+        <form>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <!-- Footer with copyright and social media links -->
+    <footer>
+        <p>© 2025 Red Arsenal Weightlifting. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Instagram</a>
+            <a href="#">Twitter</a>
+        </div>
+    </footer>
+</body>
+</html>
